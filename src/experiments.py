@@ -109,18 +109,18 @@ algorithms = {
     'nb_1st':  GridSearchCV(
         estimator = Pipeline(steps = [
             ('preprocessing', first_preprocessing)
-            ,('knn', GaussianNB())
+            ,('nb', GaussianNB())
         ]), 
-        param_grid = None,
+        param_grid = {'nb__var_smoothing': [1e-9]},
         scoring=scorer,
         cv=gscv)
     
     ,'nb_2nd':  GridSearchCV(
         estimator = Pipeline(steps = [
             ('preprocessing', second_preprocessing)
-            ,('knn', GaussianNB())
+            ,('nb', GaussianNB())
         ]), 
-        param_grid = None,
+        param_grid = {'nb__var_smoothing': [1e-9]},
         scoring=scorer,
         cv=gscv)
     ,
