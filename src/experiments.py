@@ -1,12 +1,18 @@
 # Models
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.naive_bayes import GaussianNB
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.svm import SVC
+from sklearn.neural_network import MLPClassifier
+
 
 # Pre-processing
 from sklearn.pipeline import Pipeline
 from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import KBinsDiscretizer, StandardScaler, OneHotEncoder
 from sklearn.feature_selection import VarianceThreshold
+from sklearn.decomposition import PCA
+
 
 # Performance measures
 from sklearn.model_selection import GridSearchCV, StratifiedKFold
@@ -17,9 +23,20 @@ from sklearn.compose import ColumnTransformer
 
 
 seed = 42
-scorer = make_scorer(precision_score, average='micro') # Teste outras
+precision_scorer = make_scorer(precision_score, average='micro') # Teste outras
+recall_scorer = make_scorer(recall_score, average='micro') # Teste outras
+f1_scorer = make_scorer(f1_score, average='micro') # Teste outras
+accuracy_scorer = make_scorer(accuracy_score) # Teste outras
 
-cv = StratifiedKFold(n_splits=10, shuffle=True, random_state=seed)
+scorers = {
+    'precision': precision_scorer
+    ,'recall': recall_scorer
+    ,'f1': f1_scorer
+    ,'accuracy': accuracy_scorer
+}
+
+
+cv = StratifiedKFold(n_splits=3, shuffle=True, random_state=seed)
 gscv = StratifiedKFold(n_splits=3, shuffle=True, random_state=seed)
 
 numerical_transformer = Pipeline(steps=[
@@ -79,52 +96,87 @@ second_preprocessing = ColumnTransformer(
         ('cat', categorical_transformer, categorical_features)
     ])
 
+def build_algorithms(scorer = accuracy_score):
 
-algorithms = {
-    'kNN':  GridSearchCV(
-        estimator = Pipeline(steps = [
-            ('preprocessing', first_preprocessing)
-            ,('knn', KNeighborsClassifier())
-        ]), 
-        param_grid={
-            'knn__n_neighbors': [1, 3, 5],
-            'knn__p': [1, 2],
-        },
-        scoring=scorer,
-        cv=gscv)
-    
-    ,'kNN_2nd':  GridSearchCV(
-        estimator = Pipeline(steps = [
-            ('preprocessing', second_preprocessing)
-            ,('knn', KNeighborsClassifier())
-        ]), 
-        param_grid={
-            'knn__n_neighbors': [1, 3, 5],
-            'knn__p': [1, 2],
-        },
-        scoring=scorer,
-        cv=gscv)
-    ,
+    algorithms = {
+        'kNN':  GridSearchCV(
+            estimator = Pipeline(steps = [
+                ('preprocessing', first_preprocessing)
+                ,('knn', KNeighborsClassifier())
+            ]), 
+            param_grid={
+                'knn__n_neighbors': [1, 3, 5],
+                'knn__p': [1, 2],
+            },
+            # scoring = scorer,
+            # cv = cv
+            )
+        ,'tree':  GridSearchCV(
+            Pipeline([
+                ('preprocessing', first_preprocessing),
+                ('tree', DecisionTreeClassifier(random_state=seed))]), 
+            param_grid={
+                'tree__max_depth': [5, 10, 20],
+                'tree__criterion': ['entropy', 'gini'],
+            },
+            )
 
-    'nb_1st':  GridSearchCV(
-        estimator = Pipeline(steps = [
-            ('preprocessing', first_preprocessing)
-            ,('nb', GaussianNB())
-        ]), 
-        param_grid = {'nb__var_smoothing': [1e-9]},
-        scoring=scorer,
-        cv=gscv)
-    
-    ,'nb_2nd':  GridSearchCV(
-        estimator = Pipeline(steps = [
-            ('preprocessing', second_preprocessing)
-            ,('nb', GaussianNB())
-        ]), 
-        param_grid = {'nb__var_smoothing': [1e-9]},
-        scoring=scorer,
-        cv=gscv)
-    ,
-}
+    ,'svmlinear': GridSearchCV(
+        Pipeline([
+            ('preprocessing', first_preprocessing),
+            ('pca', PCA()),
+            ('svm', SVC(kernel='linear', random_state=seed))]), 
+        param_grid={
+            'pca__n_components': [2, 5, 10],
+            'svm__C': [1.0, 2.0],
+        },
+        )
+    ,'ann': GridSearchCV(
+        Pipeline([
+            ('preprocessing', first_preprocessing),
+            ('ann', MLPClassifier(random_state = 1, max_iter=500))]), 
+        param_grid = {
+            #'activation': ['tanh', 'logistic'],
+            #'hidden_layer_sizes': [(10,)],
+            #'solver': ['adam'],
+        },
+        )
+
+        
+        # ,'kNN_2nd':  GridSearchCV(
+        #     estimator = Pipeline(steps = [
+        #         ('preprocessing', second_preprocessing)
+        #         ,('knn', KNeighborsClassifier())
+        #     ]), 
+        #     param_grid={
+        #         'knn__n_neighbors': [1, 3, 5],
+        #         'knn__p': [1, 2],
+        #     },
+        #     scoring = f1_scorer,
+        #     cv = gscv)
+        # ,
+
+        # 'nb_1st':  GridSearchCV(
+        #     estimator = Pipeline(steps = [
+        #         ('preprocessing', first_preprocessing)
+        #         ,('nb', GaussianNB())
+        #     ]), 
+        #     param_grid = {'nb__var_smoothing': [1e-9]},
+        #     scoring = f1_scorer,
+        #     cv = gscv)
+        
+        # ,'nb_2nd':  GridSearchCV(
+        #     estimator = Pipeline(steps = [
+        #         ('preprocessing', second_preprocessing)
+        #         ,('nb', GaussianNB())
+        #     ]), 
+        #     param_grid = {'nb__var_smoothing': [1e-9]},
+        #     scoring = f1_scorer,
+        #     cv = gscv)
+        # ,
+    }
+
+    return algorithms
 
 
 
