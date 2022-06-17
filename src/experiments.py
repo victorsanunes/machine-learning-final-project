@@ -23,9 +23,9 @@ from sklearn.compose import ColumnTransformer
 
 
 seed = 42
-precision_scorer = make_scorer(precision_score, average='micro') # Teste outras
-recall_scorer = make_scorer(recall_score, average='micro') # Teste outras
-f1_scorer = make_scorer(f1_score, average='micro') # Teste outras
+precision_scorer = make_scorer(precision_score, average='weighted') # Teste outras
+recall_scorer = make_scorer(recall_score, average='weighted') # Teste outras
+f1_scorer = make_scorer(f1_score, average='weighted') # Teste outras
 accuracy_scorer = make_scorer(accuracy_score) # Teste outras
 
 scorers = {
@@ -79,6 +79,28 @@ numerical_features = [
 categorical_features = [
     'IMC_categoria'    
 ]
+
+['Genero', 
+'Idade', 
+'Escolaridade', 
+'Estado_Civil',
+ 'Filhos',
+ 'Atividade_fisica_semana',
+  'Cigarros_dia',
+   'Horas_Dormidas_dia',
+       'Se_Capacitando', 'Outro_emprego', 'Ambiente_Trabalho',
+       'Categoria_Profissional', 'Tempo_Empresa_anos', 'Tempo_Funcao_anos',
+       'Horas_Trabalhadas_Semana', 'Pausas_Programadas_minutos',
+       'Trabalho_Entre_Ferias_meses', 'Recebeu_Treinamento',
+       'Como_foi_treinado', 'Trabalho_Chato', 'Trabalho_Organizado',
+       'Prazos_Apertados', 'Satisfação_Gerencia', 'Satisfação_Dificuldades',
+       'Tempo_Pe_horas', 'Tempo_Sentado_horas', 'Tempo_Corcoras_horas',
+       'Superiores_Desconfortavel_horas', 'Inferiores_Desconfortavel_horas',
+       'Tronco_Curvado_horas', 'Tronco_Torcido_horas', 'Maos_Dedos_horas',
+       'Movimentos_repetitivos_horas', 'Movimentos_Rapidos_horas',
+       'Ferramentas_Maos_horas', 'Ferramentas_Corpo_horas',
+       'dados.Costa_superior', 'dados.Costa_media', 'dados.Costa_inferior',
+       'bmi', 'carry_weight']
 
 first_preprocessing = ColumnTransformer(
     transformers = [
