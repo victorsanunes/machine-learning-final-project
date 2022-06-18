@@ -13,7 +13,6 @@ from sklearn.preprocessing import KBinsDiscretizer, StandardScaler, OneHotEncode
 from sklearn.feature_selection import VarianceThreshold
 from sklearn.decomposition import PCA
 
-
 # Performance measures
 from sklearn.model_selection import GridSearchCV, StratifiedKFold
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
@@ -49,63 +48,80 @@ categorical_transformer = Pipeline(steps = [
     ('encoder', OneHotEncoder(handle_unknown='ignore'))
 ])
 
-numerical_features = [
+continous_columns = [
     'Idade', 
+    'bmi',
     'Filhos',
-    'Horas_Trabalhadas_Semana',
+    'Atividade_fisica_semana',
+    'Cigarros_dia',
+    'Horas_Dormidas_dia',
     'Tempo_Empresa_anos',
+    #'Horas_Trabalhadas_Dia',
+    'Tempo_Funcao_anos',
+    'Horas_Trabalhadas_Semana',
+    'Pausas_Programadas_minutos',
     'Trabalho_Entre_Ferias_meses',
     'Tempo_Pe_horas',
     'Tempo_Sentado_horas',
     'Tempo_Corcoras_horas',
-    'Cigarros_dia',
-    'Horas_Dormidas_dia',
-    'Pausas_Programadas_minutos',
     'Superiores_Desconfortavel_horas',
     'Inferiores_Desconfortavel_horas',
     'Tronco_Curvado_horas',
     'Tronco_Torcido_horas',
     'Maos_Dedos_horas',
-    'Carga_6_horas',
-    'Carga_15_horas',
-    'Carga_25_horas',
+    'carry_weight',
     'Movimentos_repetitivos_horas',
     'Movimentos_Rapidos_horas',
     'Ferramentas_Maos_horas',
-    'Ferramentas_Corpo_horas',
-    'Horas_Carregando_Carga'
+    'Ferramentas_Corpo_horas'
+                    ]
+categorical_columns = [
+    'Genero',
+    'Estado_Civil',
+    'Se_Capacitando',
+    'Outro_emprego',
+    'Ambiente_Trabalho',
+    'Categoria_Profissional',
+    'Recebeu_Treinamento',
+    'Como_foi_treinado',
+    'Escolaridade',
+    'Trabalho_Chato',
+    'Trabalho_Organizado',
+    'Prazos_Apertados',
+    'Satisfacao_Gerencia',
+    'Satisfacao_Dificuldades',
+    'bmi_category'
 ]
 
-categorical_features = [
-    'IMC_categoria'    
-]
+selected_features = [
+    'Pausas_Programadas_minutos',
+    'Tempo_Empresa_anos',
+    'Tempo_Funcao_anos',
+    'Tempo_Sentado_horas',
+    'bmi',
+    'Trabalho_Entre_Ferias_meses',
+    'Se_Capacitando',
+    'Inferiores_Desconfortavel_horas',
+    'Tempo_Pe_horas',
+    'Movimentos_Rapidos_horas',
+    'Idade',
+    'Ambiente_Trabalho',
+    'Genero',
+    'Outro_emprego',
+    'Horas_Trabalhadas_Semana',
+    'Estado_Civil',
+    'carry_weight'
+ ]
 
-['Genero', 
-'Idade', 
-'Escolaridade', 
-'Estado_Civil',
- 'Filhos',
- 'Atividade_fisica_semana',
-  'Cigarros_dia',
-   'Horas_Dormidas_dia',
-       'Se_Capacitando', 'Outro_emprego', 'Ambiente_Trabalho',
-       'Categoria_Profissional', 'Tempo_Empresa_anos', 'Tempo_Funcao_anos',
-       'Horas_Trabalhadas_Semana', 'Pausas_Programadas_minutos',
-       'Trabalho_Entre_Ferias_meses', 'Recebeu_Treinamento',
-       'Como_foi_treinado', 'Trabalho_Chato', 'Trabalho_Organizado',
-       'Prazos_Apertados', 'Satisfação_Gerencia', 'Satisfação_Dificuldades',
-       'Tempo_Pe_horas', 'Tempo_Sentado_horas', 'Tempo_Corcoras_horas',
-       'Superiores_Desconfortavel_horas', 'Inferiores_Desconfortavel_horas',
-       'Tronco_Curvado_horas', 'Tronco_Torcido_horas', 'Maos_Dedos_horas',
-       'Movimentos_repetitivos_horas', 'Movimentos_Rapidos_horas',
-       'Ferramentas_Maos_horas', 'Ferramentas_Corpo_horas',
-       'dados.Costa_superior', 'dados.Costa_media', 'dados.Costa_inferior',
-       'bmi', 'carry_weight']
+selected_categorical = list(set(categorical_columns).intersection(selected_features))
+selected_continous = list(set(continous_columns).intersection(selected_features))
+
+target_columns = ['dados.Costa_superior', 'dados.Costa_media', 'dados.Costa_inferior']
 
 first_preprocessing = ColumnTransformer(
     transformers = [
-        ('num', numerical_transformer, numerical_features),
-        ('cat', categorical_transformer, categorical_features)
+        ('num', numerical_transformer, selected_continous),
+        ('cat', categorical_transformer, selected_categorical)
     ])
 
 second_numerical_transformer = Pipeline(steps=[
@@ -114,8 +130,8 @@ second_numerical_transformer = Pipeline(steps=[
 ])
 second_preprocessing = ColumnTransformer(
     transformers = [
-        ('num', second_numerical_transformer, numerical_features),
-        ('cat', categorical_transformer, categorical_features)
+        ('num', second_numerical_transformer, selected_continous),
+        ('cat', categorical_transformer, selected_categorical)
     ])
 
 def build_algorithms(scorer = accuracy_score):
