@@ -148,7 +148,7 @@ def build_algorithms(scorer = accuracy_score):
             },
             # scoring = scorer,
             # cv = cv
-            )
+        )
         ,'tree':  GridSearchCV(
             Pipeline([
                 ('preprocessing', first_preprocessing),
@@ -157,27 +157,36 @@ def build_algorithms(scorer = accuracy_score):
                 'tree__max_depth': [5, 10, 20],
                 'tree__criterion': ['entropy', 'gini'],
             },
-            )
-
-    ,'svmlinear': GridSearchCV(
-        Pipeline([
-            ('preprocessing', first_preprocessing),
-            ('pca', PCA()),
-            ('svm', SVC(kernel='linear', random_state=seed))]), 
-        param_grid={
-            'pca__n_components': [2, 5, 10],
-            'svm__C': [1.0, 2.0],
-        },
         )
-    ,'ann': GridSearchCV(
-        Pipeline([
-            ('preprocessing', first_preprocessing),
-            ('ann', MLPClassifier(random_state = 1, max_iter=500))]), 
-        param_grid = {
-            #'activation': ['tanh', 'logistic'],
-            #'hidden_layer_sizes': [(10,)],
-            #'solver': ['adam'],
-        },
+
+        ,'nb_1st':  GridSearchCV(
+            estimator = Pipeline(steps = [
+                ('preprocessing', first_preprocessing)
+                ,('nb', GaussianNB())
+            ]), 
+            param_grid = {'nb__var_smoothing': [1e-9]},
+        )
+
+        ,'svmlinear': GridSearchCV(
+            Pipeline([
+                ('preprocessing', first_preprocessing),
+                ('pca', PCA()),
+                ('svm', SVC(kernel='linear', random_state=seed))]), 
+            param_grid={
+                'pca__n_components': [2, 5, 10],
+                'svm__C': [1.0, 2.0],
+            },
+        )
+
+        ,'ann': GridSearchCV(
+            Pipeline([
+                ('preprocessing', first_preprocessing),
+                ('ann', MLPClassifier(random_state = 1, max_iter=500))]), 
+            param_grid = {
+                #'activation': ['tanh', 'logistic'],
+                #'hidden_layer_sizes': [(10,)],
+                #'solver': ['adam'],
+            },
         )
 
         
