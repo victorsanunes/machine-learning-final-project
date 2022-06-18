@@ -94,16 +94,16 @@ categorical_columns = [
 ]
 
 selected_features = [
+    'Tempo_Sentado_horas',
     'Tempo_Funcao_anos',
-    'Pausas_Programadas_minutos',
-    'Tempo_Empresa_anos',
-    'Idade',
+    'carry_weight',
     'Movimentos_Rapidos_horas',
-    'Tempo_Pe_horas',
+    'Escolaridade',
     'bmi',
-    'Inferiores_Desconfortavel_horas',
-    'Horas_Trabalhadas_Semana',
-    'Tempo_Sentado_horas'
+    'Satisfacao_Gerencia',
+    'Tempo_Empresa_anos',
+    'Trabalho_Entre_Ferias_meses',
+    'Inferiores_Desconfortavel_horas'
 ]
 
 selected_categorical = list(set(categorical_columns).intersection(selected_features))
