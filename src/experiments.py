@@ -94,24 +94,17 @@ categorical_columns = [
 ]
 
 selected_features = [
+    'Tempo_Funcao_anos',
     'Pausas_Programadas_minutos',
     'Tempo_Empresa_anos',
-    'Tempo_Funcao_anos',
-    'Tempo_Sentado_horas',
-    'bmi',
-    'Trabalho_Entre_Ferias_meses',
-    'Se_Capacitando',
-    'Inferiores_Desconfortavel_horas',
-    'Tempo_Pe_horas',
-    'Movimentos_Rapidos_horas',
     'Idade',
-    'Ambiente_Trabalho',
-    'Genero',
-    'Outro_emprego',
+    'Movimentos_Rapidos_horas',
+    'Tempo_Pe_horas',
+    'bmi',
+    'Inferiores_Desconfortavel_horas',
     'Horas_Trabalhadas_Semana',
-    'Estado_Civil',
-    'carry_weight'
- ]
+    'Tempo_Sentado_horas'
+]
 
 selected_categorical = list(set(categorical_columns).intersection(selected_features))
 selected_continous = list(set(continous_columns).intersection(selected_features))
