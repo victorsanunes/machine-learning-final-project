@@ -4,7 +4,7 @@ from sklearn.naive_bayes import GaussianNB
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.svm import SVC
 from sklearn.neural_network import MLPClassifier
-
+from sklearn.dummy import DummyClassifier
 
 # Pre-processing
 from sklearn.pipeline import Pipeline
@@ -130,7 +130,9 @@ second_preprocessing = ColumnTransformer(
 def build_algorithms(scorer = accuracy_score):
 
     algorithms = {
-        'kNN':  GridSearchCV(
+        'dummy':  DummyClassifier(strategy="most_frequent")
+
+        ,'kNN':  GridSearchCV(
             estimator = Pipeline(steps = [
                 ('preprocessing', first_preprocessing)
                 ,('knn', KNeighborsClassifier())
