@@ -35,7 +35,7 @@ scorers = {
 }
 
 
-cv = StratifiedKFold(n_splits=3, shuffle=True, random_state=seed)
+cv = StratifiedKFold(n_splits=10, shuffle=True, random_state=seed)
 gscv = StratifiedKFold(n_splits=3, shuffle=True, random_state=seed)
 
 numerical_transformer = Pipeline(steps=[
