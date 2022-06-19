@@ -163,10 +163,10 @@ def build_algorithms(scorer = accuracy_score):
         ,'svmlinear': GridSearchCV(
             Pipeline([
                 ('preprocessing', first_preprocessing),
-                ('pca', PCA()),
+                # ('pca', PCA()),
                 ('svm', SVC(kernel='linear', random_state=seed))]), 
             param_grid={
-                'pca__n_components': [2, 5, 10],
+                # 'pca__n_components': [2, 5, 10],
                 'svm__C': [1.0, 2.0],
             },
         )
