@@ -6,3 +6,4 @@ data/train-preprocessed1.csv
 data/train-preprocessed2.csv
 notebooks/.ipynb_checkpoints/eda-checkpoint.ipynb
 notebooks/.ipynb_checkpoints/pre-processing-checkpoint.ipynb
+*.pyc
