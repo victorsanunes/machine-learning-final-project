@@ -141,8 +141,8 @@ def build_algorithms(scorer = accuracy_score):
                 'knn__n_neighbors': [1, 3, 5],
                 'knn__p': [1, 2],
             },
-            # scoring = scorer,
-            # cv = cv
+            scoring = precision_scorer,
+            cv = gscv
         )
         ,'tree':  GridSearchCV(
             Pipeline([
@@ -152,6 +152,8 @@ def build_algorithms(scorer = accuracy_score):
                 'tree__max_depth': [5, 10, 20],
                 'tree__criterion': ['entropy', 'gini'],
             },
+            scoring = precision_scorer,
+            cv = gscv
         )
 
         ,'nb_1st':  GridSearchCV(
@@ -160,6 +162,8 @@ def build_algorithms(scorer = accuracy_score):
                 ,('nb', GaussianNB())
             ]), 
             param_grid = {'nb__var_smoothing': [1e-9]},
+            scoring = precision_scorer,
+            cv = gscv
         )
 
         ,'svmlinear': GridSearchCV(
@@ -171,6 +175,8 @@ def build_algorithms(scorer = accuracy_score):
                 # 'pca__n_components': [2, 5, 10],
                 'svm__C': [1.0, 2.0],
             },
+            scoring = precision_scorer,
+            cv = gscv
         )
 
         ,'ann': GridSearchCV(
@@ -182,6 +188,8 @@ def build_algorithms(scorer = accuracy_score):
                 #'hidden_layer_sizes': [(10,)],
                 #'solver': ['adam'],
             },
+            scoring = precision_scorer,
+            cv = gscv
         )
 
         
@@ -194,8 +202,8 @@ def build_algorithms(scorer = accuracy_score):
         #         'knn__n_neighbors': [1, 3, 5],
         #         'knn__p': [1, 2],
         #     },
-        #     scoring = f1_scorer,
-        #     cv = gscv)
+            # scoring = precision_scorer,
+            # cv = gscv)
         # ,
 
         # 'nb_1st':  GridSearchCV(
@@ -204,8 +212,8 @@ def build_algorithms(scorer = accuracy_score):
         #         ,('nb', GaussianNB())
         #     ]), 
         #     param_grid = {'nb__var_smoothing': [1e-9]},
-        #     scoring = f1_scorer,
-        #     cv = gscv)
+            # scoring = precision_scorer,
+            # cv = gscv)
         
         # ,'nb_2nd':  GridSearchCV(
         #     estimator = Pipeline(steps = [
@@ -213,8 +221,8 @@ def build_algorithms(scorer = accuracy_score):
         #         ,('nb', GaussianNB())
         #     ]), 
         #     param_grid = {'nb__var_smoothing': [1e-9]},
-        #     scoring = f1_scorer,
-        #     cv = gscv)
+            # scoring = precision_scorer,
+            # cv = gscv)
         # ,
     }
 
