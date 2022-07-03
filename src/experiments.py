@@ -10,8 +10,9 @@ from sklearn.dummy import DummyClassifier
 from sklearn.pipeline import Pipeline
 from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import KBinsDiscretizer, StandardScaler, OneHotEncoder
-from sklearn.feature_selection import VarianceThreshold
 from sklearn.decomposition import PCA
+from sklearn.feature_selection import VarianceThreshold, SelectKBest
+
 
 # Performance measures
 from sklearn.model_selection import GridSearchCV, StratifiedKFold
@@ -34,6 +35,7 @@ scorers = {
     ,'accuracy': accuracy_scorer
 }
 
+refit_scorer = 'f1'
 
 cv = StratifiedKFold(n_splits=10, shuffle=True, random_state=seed)
 gscv = StratifiedKFold(n_splits=3, shuffle=True, random_state=seed)
@@ -135,15 +137,18 @@ def build_algorithms(scorer = accuracy_score):
         ,'kNN':  GridSearchCV(
             estimator = Pipeline(steps = [
                 ('preprocessing', first_preprocessing)
+                , ('selector', SelectKBest())
                 ,('knn', KNeighborsClassifier())
             ]), 
             param_grid={
                 'knn__n_neighbors': [1, 3, 5],
                 'knn__p': [1, 2],
             },
-            scoring = precision_scorer,
-            cv = gscv
+            scoring = scorers,
+            cv = gscv,
+            refit = refit_scorer
         )
+
         ,'tree':  GridSearchCV(
             Pipeline([
                 ('preprocessing', first_preprocessing),
@@ -152,8 +157,9 @@ def build_algorithms(scorer = accuracy_score):
                 'tree__max_depth': [5, 10, 20],
                 'tree__criterion': ['entropy', 'gini'],
             },
-            scoring = precision_scorer,
-            cv = gscv
+            scoring = scorers,
+            cv = gscv,
+            refit = refit_scorer
         )
 
         ,'nb_1st':  GridSearchCV(
@@ -162,8 +168,9 @@ def build_algorithms(scorer = accuracy_score):
                 ,('nb', GaussianNB())
             ]), 
             param_grid = {'nb__var_smoothing': [1e-9]},
-            scoring = precision_scorer,
-            cv = gscv
+            scoring = scorers,
+            cv = gscv,
+            refit = refit_scorer
         )
 
         ,'svmlinear': GridSearchCV(
@@ -175,8 +182,9 @@ def build_algorithms(scorer = accuracy_score):
                 # 'pca__n_components': [2, 5, 10],
                 'svm__C': [1.0, 2.0],
             },
-            scoring = precision_scorer,
-            cv = gscv
+            scoring = scorers,
+            cv = gscv,
+            refit = refit_scorer
         )
 
         ,'ann': GridSearchCV(
@@ -202,8 +210,9 @@ def build_algorithms(scorer = accuracy_score):
         #         'knn__n_neighbors': [1, 3, 5],
         #         'knn__p': [1, 2],
         #     },
-            # scoring = precision_scorer,
-            # cv = gscv)
+            # scoring = scorers,
+            # cv = gscv,
+            # refit = refit_scorer
         # ,
 
         # 'nb_1st':  GridSearchCV(
@@ -212,8 +221,9 @@ def build_algorithms(scorer = accuracy_score):
         #         ,('nb', GaussianNB())
         #     ]), 
         #     param_grid = {'nb__var_smoothing': [1e-9]},
-            # scoring = precision_scorer,
-            # cv = gscv)
+            # scoring = scorers,
+            # cv = gscv,
+            # refit = refit_scorer)
         
         # ,'nb_2nd':  GridSearchCV(
         #     estimator = Pipeline(steps = [
@@ -221,8 +231,9 @@ def build_algorithms(scorer = accuracy_score):
         #         ,('nb', GaussianNB())
         #     ]), 
         #     param_grid = {'nb__var_smoothing': [1e-9]},
-            # scoring = precision_scorer,
-            # cv = gscv)
+            # scoring = scorers,
+            # cv = gscv,
+            # refit = refit_scorer)
         # ,
     }
 
