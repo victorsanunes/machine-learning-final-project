@@ -153,8 +153,10 @@ def build_algorithms(scorer = accuracy_score):
 
         ,'tree':  GridSearchCV(
             Pipeline([
-                ('preprocessing', first_preprocessing),
-                ('tree', DecisionTreeClassifier(random_state=seed))]), 
+                ('preprocessing', first_preprocessing)
+                , ('selector', SelectKBest())
+                
+                , ('tree', DecisionTreeClassifier(random_state=seed))]), 
             param_grid={
                 'tree__max_depth': [5, 10, 20],
                 'tree__criterion': ['entropy', 'gini'],
@@ -167,7 +169,8 @@ def build_algorithms(scorer = accuracy_score):
         ,'nb_1st':  GridSearchCV(
             estimator = Pipeline(steps = [
                 ('preprocessing', first_preprocessing)
-                ,('nb', GaussianNB())
+                , ('selector', SelectKBest())
+                , ('nb', GaussianNB())
             ]), 
             param_grid = {'nb__var_smoothing': [1e-9]},
             scoring = scorers,
@@ -177,9 +180,11 @@ def build_algorithms(scorer = accuracy_score):
 
         ,'svmlinear': GridSearchCV(
             Pipeline([
-                ('preprocessing', first_preprocessing),
+                ('preprocessing', first_preprocessing)
                 # ('pca', PCA()),
-                ('svm', SVC(kernel='linear', random_state=seed))]), 
+                , ('selector', SelectKBest())
+                
+                , ('svm', SVC(kernel='linear', random_state=seed))]), 
             param_grid={
                 # 'pca__n_components': [2, 5, 10],
                 'svm__C': [1.0, 2.0],
@@ -191,8 +196,9 @@ def build_algorithms(scorer = accuracy_score):
 
         ,'ann': GridSearchCV(
             Pipeline([
-                ('preprocessing', first_preprocessing),
-                ('ann', MLPClassifier(random_state = 1, max_iter=500))]), 
+                ('preprocessing', first_preprocessing)
+                , ('selector', SelectKBest())
+                , ('ann', MLPClassifier(random_state = 1, max_iter=500))]), 
             param_grid = {
                 #'activation': ['tanh', 'logistic'],
                 #'hidden_layer_sizes': [(10,)],
